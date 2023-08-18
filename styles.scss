@@ -624,12 +624,40 @@ footer {
     align-items: start;
     justify-content: start;
     gap: 26px;
+    overflow: auto;
+    padding: 5px;
+
+    &::-webkit-scrollbar {
+        display: none;
+        height: 12px;
+        width: 1px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.30);
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.431);
+
+        }
+
+        &:active {
+            background: rgba(255, 255, 255, 0.715);
+
+        }
+    }
+
+    &::-webkit-scrollbar-track {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
 
     .item {
         padding: 15px;
         border-radius: 6px;
         background: #181818;
         max-width: 175px;
+        min-height: 259.78px;
         cursor: pointer;
         transition: .3s ease;
 
@@ -645,10 +673,17 @@ footer {
         .item_img {
             margin-bottom: 20px;
             position: relative;
+
+            img {
+                width: 145px;
+                height: 145px;
+            }
         }
 
         .play {
             img {
+                width: 18px;
+                height: 20px;
                 position: absolute;
                 top: 50%;
                 left: 55%;
