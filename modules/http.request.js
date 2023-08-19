@@ -8,6 +8,19 @@ export let getDetails = async (path) => {
     try {
         const res = await axios.get(baseURL + path, {
             headers: {
+                Authorization: `Bearer ${import.meta.env.VITE_API_KEY}`
+            }
+        })
+
+        return res
+    } catch (e) {
+        console.log(e);
+    }
+}
+export let getUser = async (path) => {
+    try {
+        const res = await axios.get(baseURL + path, {
+            headers: {
                 Authorization: `Bearer ${token}`
             }
         })

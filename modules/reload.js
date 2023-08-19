@@ -20,11 +20,11 @@ export function reloadSpotiPlaylist(arr, place) {
         img.src = `${el.images[0].url}`
         triangle.src = "/icons/play.svg"
         item_descr.innerHTML = el.description.slice(0, 30) + "..."
-        let ln = el.name.length
-        if (ln > el.name.slice(0, 14)) {
-            item_title.innerHTML = el.name.slice(0, 14) + "..."
+        let ln = el.name.trim().length
+        if (ln > el.name.slice(0, 16).length) {
+            item_title.innerHTML = el.name.slice(0, 16) + "..."
         } else {
-            item_title.innerHTML = el.name.slice(0, 14)
+            item_title.innerHTML = el.name.slice(0, 16)
         }
         item.append(item_img, item_title, item_descr)
         item_img.append(img, play)
