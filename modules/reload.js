@@ -1,5 +1,3 @@
-import { token } from "./token"
-
 export function reloadSpotiPlaylist(arr, place) {
 
     place.innerHTML = ""
@@ -23,10 +21,10 @@ export function reloadSpotiPlaylist(arr, place) {
         triangle.src = "/icons/play.svg"
         item_descr.innerHTML = el.description.slice(0, 30) + "..."
         let ln = el.name.trim().length
-        if (ln > el.name.slice(0, 16).length) {
-            item_title.innerHTML = el.name.slice(0, 16) + "..."
+        if (ln > el.name.slice(0, 15).length) {
+            item_title.innerHTML = el.name.slice(0, 15) + "..."
         } else {
-            item_title.innerHTML = el.name.slice(0, 16)
+            item_title.innerHTML = el.name.slice(0, 15)
         }
         item.append(item_img, item_title, item_descr)
         item_img.append(img, play)

@@ -237,7 +237,7 @@ main {
         left: 0;
         z-index: 2;
         width: 100%;
-        background: rgba(0, 0, 0, 0.50);
+        background: rgba(0, 0, 0, 0.0);
 
         .nav_btns {
             @include flex();
@@ -301,7 +301,6 @@ main {
         height: 64px;
         @include flex();
         justify-content: space-between;
-
     }
 
     .container {
@@ -350,43 +349,43 @@ main {
 }
 
 footer {
-    cursor: pointer;
+    // cursor: pointer;
     @include flex();
     padding: 0 15px;
     justify-content: space-between;
     grid-column: 1/3;
     grid-row: 3/3;
-    background: linear-gradient(90deg, #AF2896 0%, #509BF5 100%);
+    // background: linear-gradient(90deg, #AF2896 0%, #509BF5 100%);
 
     color: #FFF;
 
-    h2 {
-        font-size: 12px;
-        line-height: 19.2px;
-        letter-spacing: 1.2px;
-        text-transform: uppercase;
-    }
+    // h2 {
+    //     font-size: 12px;
+    //     line-height: 19.2px;
+    //     letter-spacing: 1.2px;
+    //     text-transform: uppercase;
+    // }
 
-    p {
-        font-size: 15px;
-        line-height: 25.6px;
-    }
+    // p {
+    //     font-size: 15px;
+    //     line-height: 25.6px;
+    // }
 
-    button {
-        color: #000;
-        font-weight: 700;
-        display: flex;
-        padding: 15px 30px;
-        justify-content: center;
-        align-items: center;
-        border-radius: 500px;
-        background: #FFF;
+    // button {
+    //     color: #000;
+    //     font-weight: 700;
+    //     display: flex;
+    //     padding: 15px 30px;
+    //     justify-content: center;
+    //     align-items: center;
+    //     border-radius: 500px;
+    //     background: #FFF;
 
-        &:hover {
-            background: #e7f1ff;
-            scale: 1.03;
-        }
-    }
+    //     &:hover {
+    //         background: #e7f1ff;
+    //         scale: 1.03;
+    //     }
+    // }
 }
 
 .library {
@@ -467,9 +466,9 @@ footer {
     @include flex();
     flex-direction: column;
     align-items: start;
-    height: 180px;
-    overflow-y: auto;
-    gap: 20px;
+    // height: 180px;
+    // overflow-y: auto;
+    gap: 25px;
     justify-content: start;
 
     &::-webkit-scrollbar {
@@ -497,13 +496,14 @@ footer {
     @include flex();
     flex-direction: column;
     align-items: start;
-    gap: 20px;
+    gap: 22px;
     width: 100%;
     border-radius: 8px;
     background: #242424;
-    padding: 15px 15px;
+    padding: 20px;
 
     h3 {
+        font-size: 15px;
         color: #FFF;
         font-weight: 700;
     }
@@ -804,4 +804,101 @@ footer {
         color: #A7A7A7;
         font-size: 13px;
     }
+}
+
+.player {
+    width: 100%;
+    @include flex();
+    justify-content: space-between;
+}
+
+.player_left {
+    @include flex();
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.track_img {
+    border-radius: 7px;
+}
+
+.track_info {
+    @include flex();
+    flex-direction: column;
+    align-items: start;
+    gap: 7px;
+
+
+    h2 {
+        font-size: 13px;
+    }
+
+    p {
+        color: #B3B3B3;
+        font-size: 10px;
+    }
+}
+
+.actions {
+    @include flex();
+    gap: 20px;
+
+    button {
+        transition: .3s ease;
+        fill: #B2B2B2;
+
+        &:hover {
+            fill: #fff;
+        }
+    }
+}
+
+// .controls {
+//     display: flex;
+//     gap: 20px;
+//     justify-content: space-between;
+//     align-items: center;
+//     width: 80%;
+//     margin: 0 auto;
+// }
+
+// .line {
+//     width: 600px;
+//     max-width: 600px;
+//     background-color: #333;
+//     height: 4px;
+//     margin: 10px 0;
+//     border-radius: 1000px;
+//     position: relative;
+
+//     .progress {
+//         width: 10px;
+//         height: 100%;
+//         background-color: #1db954;
+//         border-radius: 4px;
+//         position: absolute;
+//     }
+
+//     .progress-bar {
+//         top: 50%;
+//         right: 0;
+//         transform: translateY(-50%);
+//         position: absolute;
+//         width: 10px;
+//         height: 10px;
+//         background-color: #FFF;
+//         border-radius: 1000px;
+//     }
+// }
+.audio-track {
+    width: 150px;
+    height: 3px;
+    background-color: #dddddd;
+    margin: 20px 0
+}
+
+.time {
+    width: 0;
+    height: 3px;
+    background-color: #474747
 }

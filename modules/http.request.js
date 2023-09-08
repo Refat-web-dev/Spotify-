@@ -14,7 +14,7 @@ export let getDetails = async (path) => {
 
         return res
     } catch (e) {
-        console.log(res);
+        console.log(e);
     }
 }
 export let getUser = async (path) => {
