@@ -73,8 +73,8 @@
     <div class="nav_header">
       <div class="main_cont nav_inner_header">
         <div class="nav_btns">
-          <button class="prev"><img src="/icons/prev_page.svg" alt=""></button>
-          <button class="next"><img src="/icons/next_page.svg" alt=""></button>
+          <button class="prev_page"><img src="/icons/prev_page.svg" alt=""></button>
+          <button class="next_page"><img src="/icons/next_page.svg" alt=""></button>
         </div>
         <div class="other_btns">
           <button class="sign_up reg">Sign up</button>
@@ -222,9 +222,9 @@
             </div>
           </div>
           <div class="links_right">
-            <a href="#"><img src="/public/icons/inst.svg" alt=""></a>
-            <a href="#"><img src="/public/icons/twitt.svg" alt=""></a>
-            <a href="#"><img src="/public/icons/fb.svg" alt=""></a>
+            <a href="#"><img src="/icons/inst.svg" alt=""></a>
+            <a href="#"><img src="/icons/twitt.svg" alt=""></a>
+            <a href="#"><img src="/icons/fb.svg" alt=""></a>
           </div>
         </nav>
         <div class="copyright">
@@ -244,7 +244,7 @@
     </div> -->
     <div class="player">
       <div class="player_left">
-        <img src="/public/images/ab67616d00004851e787cffec20aa2a396a61647.png" alt="" class="track_img">
+        <img src="/images/ab67616d00004851e787cffec20aa2a396a61647.png" alt="" class="track_img">
         <div class="track_info">
           <h2 class="track_name">Cruel Summer</h2>
           <p class="track_author">Taylor Swift</p>
@@ -270,30 +270,38 @@
       </div>
       <div class="player_center">
         <audio
-          src='https://sefon.pro/api/mp3_download/direct/34839/3vUCAKNRO7u7Nu-IunE7zpA2ES6ZIsYT-ZyL5vEXh214owDZGDKlSVMZ5H___UGELynpAx-LdfXiAE00EFPv--9JNGqTuuhAI6A1jAOV1VmkN43nybA0Fa73XQTBFb5f2tiMuXj0EQyiS0D0QoMeaGv54lJX3hVHrg/'
+          src="https://p.scdn.co/mp3-preview/1646a6586f057a31518688baf2a4f4fb42040c11?cid=b6c9b6d8e425462d95b781d7576efb59"
           id="audio"></audio>
-        <div id="controls">
-          <div class="audio-track">
-            <div class="time"></div>
-          </div>
-          <button class="play">Play</button>
-          <button class="pause">Pause</button>
-          <button class="prev">&#60;prev</button>
-          <button class="next">next&#62;</button>
+        <div class="controls">
+          <button class="mix"><img src="/icons/remix.svg" alt=""></button>
+          <button class="prev"><img src="/icons/prev.svg" alt=""></button>
+          <button class="play"><img src="/icons/play.svg" alt=""></button>
+          <button class="next"><img src="/icons/next.svg" alt=""></button>
+          <button class="replay"><img src="/icons/replay.svg" alt=""></button>
         </div>
-        <!-- <div class="controls">
-          <button>play</button>
-          <button>prev</button>
-          <div class="line">
-            <div class="progress">
-              <div class="progress-bar">
+        <div class="main_line">
+          <span class="currentTime">00:00</span>
+          <div class="parent_line">
+            <div class="line">
+              <div class="progress">
+                <div class="progress-bar">
+                </div>
               </div>
             </div>
           </div>
-          <button>next</button>
-        </div> -->
+          <span class="duration">00:00</span>
+        </div>
       </div>
-      <div class="player_right"></div>
+      <div class="player_right">
+        <div class="controls">
+          <button class="act"><img src="public/icons/now_playing.svg" alt=""></button>
+          <button class="act"><img src="public/icons/now_playing.svg" alt=""></button>
+          <button class="act"><img src="public/icons/now_playing.svg" alt=""></button>
+          <button class="act"><img src="public/icons/now_playing.svg" alt=""></button>
+          <button class="act"><img src="public/icons/now_playing.svg" alt=""></button>
+          <button class="act"><img src="public/icons/now_playing.svg" alt=""></button>
+        </div>
+      </div>
     </div>
   </footer>
   <script type="module" src="/main.js"></script>

@@ -11,14 +11,15 @@ export function reloadSpotiPlaylist(arr, place) {
         let triangle = document.createElement("img")
         let item_title = document.createElement("h3")
         let item_descr = document.createElement("p")
-
+        item.id = el.id
         item.classList.add("item")
+        item_img.id = el.tracks.href
         item_img.classList.add("item_img")
         play.classList.add("play")
         item_title.classList.add("item_title")
         item_descr.classList.add("item_descr")
         img.src = `${el.images[0].url}`
-        triangle.src = "/icons/play.svg"
+        triangle.src = "/icons/playlist_play_icon.svg"
         item_descr.innerHTML = el.description.slice(0, 30) + "..."
         let ln = el.name.trim().length
         if (ln > el.name.slice(0, 15).length) {

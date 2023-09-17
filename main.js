@@ -42,8 +42,147 @@ reg.forEach(btn => {
 
     }
 })
+
 localStorage.setItem("token", JSON.stringify(location.href.split('access_token=').at(-1)))
 
+let audio = document.getElementById("audio");
+let progress = document.querySelector(".progress");
+let line = document.querySelector(".parent_line");
+let btnPlay = document.querySelector(".controls .play img");
+let btnPrev = document.querySelector(".prev");
+let btnNext = document.querySelector(".next");
+let currentTime = document.querySelector(".currentTime");
+let duration = document.querySelector(".duration");
+let isPlaying = false
+let playlist = [];
+console.log(btnPlay);
+
+let treck; // Переменная с индексом трека
+
+// Событие перед загрузкой страницы
+window.onload = function () {
+    treck = 0; // Присваиваем переменной ноль
+}
+
+function switchTreck(numTreck) {
+    // Меняем значение атрибута src
+    audio.src = playlist[numTreck];
+    // Назначаем время песни ноль
+    audio.currentTime = 0;
+    // Включаем песню
+    audio.play();
+}
+
+btnPlay.onclick = () => {
+    isPlaying = !isPlaying
+
+    if (isPlaying) {
+        audio.play()
+        btnPlay.src = "/icons/pause.svg"
+    }
+    else {
+        audio.pause()
+        btnPlay.src = "/icons/play.svg"
+    }
+
+}
+
+duration.innerHTML = "00:30"
+
+audio.ontimeupdate = () => {
+    currentTime.innerHTML = `${Math.ceil(audio.currentTime)}`.length < 2 ? "00:0" + Math.ceil(audio.currentTime) : "00:" + Math.ceil(audio.currentTime)
+    progress.style.width = (audio.currentTime * 100) / audio.duration + '%';
+
+    if ((audio.currentTime * 100) / audio.duration === 100) {
+        if (treck < playlist.length - 1) { // Если да, то
+            treck++; // Увеличиваем её на один
+            switchTreck(treck); // Меняем песню
+        } else { // Иначе
+            treck = 0; // Присваиваем ей ноль
+            switchTreck(treck); // Меняем песню
+        }
+    }
+
+}
+
+let isMouseDown = false;
+
+line.addEventListener('mousedown', (e) => {
+    isMouseDown = true;
+    progress.style.width = e.offsetX + "px";
+    audio.currentTime = e.offsetX / line.offsetWidth * audio.duration
+});
+
+
+
+line.addEventListener('mouseup', () => {
+    audio.play()
+    isMouseDown = false;
+});
+
+line.addEventListener('mousemove', (e) => {
+    if (!isMouseDown) return;
+    e.preventDefault();
+    progress.style.width = e.offsetX + "px";
+    audio.currentTime = e.offsetX / line.offsetWidth * audio.duration
+    audio.pause()
+});
+
+// btnPlay.addEventListener("click", function () {
+
+//     isPlaying = !isPlaying
+//     if (isPlaying) {
+//         audio.play(); // Запуск песни
+//         // Запуск интервала
+//         var audioPlay = setInterval(function () {
+//             // Получаем значение на какой секунде песня
+//             let audioTime = Math.round(audio.currentTime);
+//             // Получаем всё время песни
+//             let audioLength = Math.round(audio.duration)
+//             // Назначаем ширину элементу time
+//             time.style.width = (audioTime * 100) / audioLength + '%';
+//             // Сравниваем, на какой секунде сейчас трек и всего сколько времени длится
+//             // И проверяем что переменная treck меньше четырёх
+//             if (audioTime == audioLength && treck < 3) {
+//                 treck++; // То Увеличиваем переменную
+//                 switchTreck(treck); // Меняем трек
+//                 // Иначе проверяем тоже самое, но переменная treck больше или равна четырём
+//             } else if (audioTime == audioLength && treck >= 3) {
+//                 treck = 0; // То присваиваем treck ноль
+//                 switchTreck(treck); // Меняем трек
+//             }
+//         }, 10)
+
+//     } else {
+//         audio.pause(); // Останавливает песню
+//         clearInterval(audioPlay) // Останавливает интервал
+//     }
+
+// });
+
+btnPrev.addEventListener("click", function () {
+    btnPlay.src = "/icons/pause.svg"
+    // Проверяем что переменная treck больше нуля
+    if (treck > 0) {
+        treck--; // Если верно, то уменьшаем переменную на один
+        switchTreck(treck); // Меняем песню.
+    } else { // Иначе
+        treck = playlist.length - 1; // Присваиваем три
+        switchTreck(treck); // Меняем песню
+    }
+});
+
+btnNext.addEventListener("click", function () {
+    btnPlay.src = "/icons/pause.svg"
+    // Проверяем что переменная treck больше трёх
+    if (treck < playlist.length - 1) { // Если да, то
+        treck++; // Увеличиваем её на один
+        switchTreck(treck); // Меняем песню
+    } else { // Иначе
+        treck = 0; // Присваиваем ей ноль
+        switchTreck(treck); // Меняем песню
+    }
+});
 
 getUser("/me")
     .then(res => {
@@ -60,17 +199,48 @@ getDetails("/browse/featured-playlists")
         //     location.assign(`${import.meta.env.VITE_AUTH_ENDPOINT}?client_id=${import.meta.env.VITE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=${import.meta.env.VITE_RESPONSE_TYPE}&scope=user-library-read%20user-read-recently-played`)
 
         // }
-        console.log(res.data.playlists.items);
         reloadSpotiPlaylist(res.data.playlists.items, spotify_playlists)
+
+        let btns = document.querySelectorAll(".item_img")
+        btns.forEach(btn => {
+            btn.onclick = () => {
+                playlist.length = 0
+                getDetails(`/playlists/${btn.id.split("/").at(-2)}/tracks`)
+                    .then(res => {
+                        for (let track of res.data.items) {
+                            if (track.track.preview_url) playlist.push(track.track.preview_url)
+                        }
+                        treck = 0
+                        switchTreck(treck); // Меняем песню.
+                        console.log(playlist);
+                        btnPrev.addEventListener("click", function () {
+                            btnPlay.src = "/icons/pause.svg"
+                            // Проверяем что переменная treck больше нуля
+                            if (treck > 0) {
+                                treck--; // Если верно, то уменьшаем переменную на один
+                                switchTreck(treck); // Меняем песню.
+                            } else { // Иначе
+                                treck = playlist.length - 1; // Присваиваем три
+                                switchTreck(treck); // Меняем песню
+                            }
+                        });
+
+                        btnNext.addEventListener("click", function () {
+                            btnPlay.src = "/icons/pause.svg"
+                            // Проверяем что переменная treck больше трёх
+                            if (treck < playlist.length - 1) { // Если да, то
+                                treck++; // Увеличиваем её на один
+                                switchTreck(treck); // Меняем песню
+                            } else { // Иначе
+                                treck = 0; // Присваиваем ей ноль
+                                switchTreck(treck); // Меняем песню
+                            }
+                        });
+                    })
+            }
+        })
     })
 
-getDetails("/me/player/recently-played")
-    .then(res => {
-        // if (!res) {
-        //     location.assign(`${import.meta.env.VITE_AUTH_ENDPOINT}?client_id=${import.meta.env.VITE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=${import.meta.env.VITE_RESPONSE_TYPE}&scope=user-library-read%20user-read-recently-played`)
-        // }
-        console.log(res.data.items);
-    })
 
 const playlistIds = [
     "37i9dQZF1DX4sWSpwq3LiO",
@@ -99,85 +269,40 @@ const axiosPromises = playlistIds.map(playlistId => getDetails(`/playlists/${pla
 // Дождитесь завершения всех запросов
 Promise.all(axiosPromises)
     .then(() => {
-        console.log(playlistData);
         reloadSpotiPlaylist(playlistData, focus);
     });
 
-let audio = document.getElementById("audio");
-let time = document.querySelector(".time");
-let btnPlay = document.querySelector(".play");
-let btnPause = document.querySelector(".pause");
-let btnPrev = document.querySelector(".prev");
-let btnNext = document.querySelector(".next");
-let playlist = [
-    'https://sefon.pro/api/mp3_download/direct/34839/3vUCAKNRO7u7Nu-IunE7zpA2ES6ZIsYT-ZyL5vEXh214owDZGDKlSVMZ5H___UGELynpAx-LdfXiAE00EFPv--9JNGqTuuhAI6A1jAOV1VmkN43nybA0Fa73XQTBFb5f2tiMuXj0EQyiS0D0QoMeaGv54lJX3hVHrg/',
-    'https://sefon.pro/api/mp3_download/direct/34839/3vUCAKNRO7u7Nu-IunE7zpA2ES6ZIsYT-ZyL5vEXh214owDZGDKlSVMZ5H___UGELynpAx-LdfXiAE00EFPv--9JNGqTuuhAI6A1jAOV1VmkN43nybA0Fa73XQTBFb5f2tiMuXj0EQyiS0D0QoMeaGv54lJX3hVHrg/',
-    'https://sefon.pro/api/mp3_download/direct/34839/3vUCAKNRO7u7Nu-IunE7zpA2ES6ZIsYT-ZyL5vEXh214owDZGDKlSVMZ5H___UGELynpAx-LdfXiAE00EFPv--9JNGqTuuhAI6A1jAOV1VmkN43nybA0Fa73XQTBFb5f2tiMuXj0EQyiS0D0QoMeaGv54lJX3hVHrg/',
-    'https://sefon.pro/api/mp3_download/direct/34839/3vUCAKNRO7u7Nu-IunE7zpA2ES6ZIsYT-ZyL5vEXh214owDZGDKlSVMZ5H___UGELynpAx-LdfXiAE00EFPv--9JNGqTuuhAI6A1jAOV1VmkN43nybA0Fa73XQTBFb5f2tiMuXj0EQyiS0D0QoMeaGv54lJX3hVHrg/',
-];
-
-let treck; // Переменная с индексом трека
-
-// Событие перед загрузкой страницы
-window.onload = function () {
-    treck = 0; // Присваиваем переменной ноль
-}
-
-function switchTreck(numTreck) {
-    // Меняем значение атрибута src
-    audio.src = playlist[numTreck];
-    // Назначаем время песни ноль
-    audio.currentTime = 0;
-    // Включаем песню
-    audio.play();
-}
-
-btnPlay.addEventListener("click", function () {
-    audio.play(); // Запуск песни
-    // Запуск интервала 
-    let audioPlay = setInterval(function () {
-        // Получаем значение на какой секунде песня
-        let audioTime = Math.round(audio.currentTime);
-        // Получаем всё время песни
-        let audioLength = Math.round(audio.duration)
-        // Назначаем ширину элементу time
-        time.style.width = (audioTime * 100) / audioLength + '%';
-        // Сравниваем, на какой секунде сейчас трек и всего сколько времени длится
-        // И проверяем что переменная treck меньше четырёх
-        if (audioTime == audioLength && treck < 3) {
-            treck++; // То Увеличиваем переменную 
-            switchTreck(treck); // Меняем трек
-            // Иначе проверяем тоже самое, но переменная treck больше или равна четырём
-        } else if (audioTime == audioLength && treck >= 3) {
-            treck = 0; // То присваиваем treck ноль
-            switchTreck(treck); // Меняем трек
+getDetails("/me/player/recently-played")
+    .then(res => {
+        // if (!res) {
+        //     location.assign(`${import.meta.env.VITE_AUTH_ENDPOINT}?client_id=${import.meta.env.VITE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=${import.meta.env.VITE_RESPONSE_TYPE}&scope=user-library-read%20user-read-recently-played`)
+        // }
+        playlist.length = 0
+        for (let track of res.data.items) {
+            if (track.track.preview_url) playlist.push(track.track.preview_url)
         }
-    }, 10)
-});
+        console.log(playlist);
+        btnPrev.addEventListener("click", function () {
+            btnPlay.src = "/icons/pause.svg"
+            // Проверяем что переменная treck больше нуля
+            if (treck > 0) {
+                treck--; // Если верно, то уменьшаем переменную на один
+                switchTreck(treck); // Меняем песню.
+            } else { // Иначе
+                treck = playlist.length - 1; // Присваиваем три
+                switchTreck(treck); // Меняем песню
+            }
+        });
 
-btnPause.addEventListener("click", function () {
-    audio.pause(); // Останавливает песню
-    clearInterval(audioPlay) // Останавливает интервал
-});
-
-btnPrev.addEventListener("click", function () {
-    // Проверяем что переменная treck больше нуля
-    if (treck > 0) {
-        treck--; // Если верно, то уменьшаем переменную на один
-        switchTreck(treck); // Меняем песню.
-    } else { // Иначе
-        treck = 3; // Присваиваем три
-        switchTreck(treck); // Меняем песню
-    }
-});
-
-btnNext.addEventListener("click", function () {
-    // Проверяем что переменная treck больше трёх
-    if (treck < 3) { // Если да, то
-        treck++; // Увеличиваем её на один
-        switchTreck(treck); // Меняем песню 
-    } else { // Иначе
-        treck = 0; // Присваиваем ей ноль
-        switchTreck(treck); // Меняем песню
-    }
-});
+        btnNext.addEventListener("click", function () {
+            btnPlay.src = "/icons/pause.svg"
+            // Проверяем что переменная treck больше трёх
+            if (treck < playlist.length - 1) { // Если да, то
+                treck++; // Увеличиваем её на один
+                switchTreck(treck); // Меняем песню
+            } else { // Иначе
+                treck = 0; // Присваиваем ей ноль
+                switchTreck(treck); // Меняем песню
+            }
+        });
+    })
