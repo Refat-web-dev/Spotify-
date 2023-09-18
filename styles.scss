@@ -866,16 +866,28 @@ footer {
     width: 100%;
     gap: 20px;
 
+    .act {
+        position: relative;
+
+        &:hover {
+            .clue {
+                opacity: 1;
+            }
+        }
+    }
+
     .play {
         img {
             filter: invert(1);
             width: 30px;
             height: 30px;
+
+            &:hover {
+                filter: invert(1);
+                scale: 1.1;
+            }
         }
 
-        &:hover {
-            scale: 1.1;
-        }
     }
 
     .mix {
@@ -895,13 +907,35 @@ footer {
 
     }
 
+    .connect {
+        width: 22px;
+    }
+
+    .volume {
+        @include flex();
+        gap: 5px;
+
+        .clue {
+            left: 10px;
+        }
+    }
+
+    .picture {
+        .clue {
+            left: -20px;
+
+        }
+    }
 
     button {
         all: unset;
         transition: .3s ease;
 
         &:hover {
-            filter: brightness(5);
+
+            img {
+                filter: brightness(5);
+            }
         }
     }
 }
@@ -963,4 +997,61 @@ footer {
         background-color: #FFF;
         border-radius: 1000px;
     }
+}
+
+.volume_parent {
+    padding: 10px 0;
+
+    &:hover {
+        .volume_point {
+            display: block;
+        }
+
+        .volume_progressed {
+            background: #1db954;
+        }
+    }
+}
+
+.volume_progress_bar {
+    width: 100px;
+    height: 4px;
+    background-color: #4D4D4D;
+    border-radius: 1000px;
+}
+
+.volume_progressed {
+    border-radius: 1000px;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    position: relative;
+    transition: .1s ease;
+
+    .volume_point {
+        display: none;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #FFF;
+        border-radius: 1000px;
+    }
+}
+
+
+.clue {
+    opacity: 0;
+    position: absolute;
+    top: -50px;
+    left: 50%;
+    translate: -50% 0;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    background: #292929;
+    white-space: nowrap;
+    transition: .3s ease;
 }

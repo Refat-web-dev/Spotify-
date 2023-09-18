@@ -1,12 +1,16 @@
 import { getDetails, getUser } from "./modules/http.request"
 import { reloadSpotiPlaylist } from "./modules/reload";
 import { scrollToX } from "./modules/scrollFunction";
+import { token } from "./modules/token";
+
 
 let spotify_playlists = document.querySelector(".spotify_playlists")
-let reg = document.querySelectorAll(".reg")
 let focus = document.querySelector(".focus")
 let nav_header = document.querySelector(".nav_header")
 let container = document.querySelector(".container")
+
+scrollToX(focus)
+scrollToX(spotify_playlists)
 
 const initialColor = [0, 0, 0, 0.0]; // Начальный цвет с прозрачностью [R, G, B, A]
 const targetColor = [18, 18, 18, 1.0]; // Целевой цвет с прозрачностью [R, G, B, A]
@@ -32,30 +36,30 @@ function blendColors(startColor, endColor, progress) {
     return blendedColor;
 }
 
-scrollToX(focus)
-scrollToX(spotify_playlists)
+if (!token) {
+    location.assign(`${import.meta.env.VITE_AUTH_ENDPOINT}?client_id=${import.meta.env.VITE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=${import.meta.env.VITE_RESPONSE_TYPE}&scope=user-library-read%20user-read-recently-played`)
+    localStorage.setItem("token", JSON.stringify(location.href.split('access_token=').at(-1)))
+}
 
-reg.forEach(btn => {
-    btn.onclick = () => {
-
-        location.assign(`${import.meta.env.VITE_AUTH_ENDPOINT}?client_id=${import.meta.env.VITE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=${import.meta.env.VITE_RESPONSE_TYPE}&scope=user-library-read%20user-read-recently-played`)
-
-    }
-})
-
-localStorage.setItem("token", JSON.stringify(location.href.split('access_token=').at(-1)))
 
 let audio = document.getElementById("audio");
 let progress = document.querySelector(".progress");
 let line = document.querySelector(".parent_line");
+let volume = document.querySelector(".volume img");
+let volume_line = document.querySelector(".volume_parent");
+let volume_progressed = document.querySelector(".volume_progressed");
 let btnPlay = document.querySelector(".controls .play img");
 let btnPrev = document.querySelector(".prev");
 let btnNext = document.querySelector(".next");
 let currentTime = document.querySelector(".currentTime");
 let duration = document.querySelector(".duration");
+let track_name = document.querySelector(".track_name");
+let track_author = document.querySelector(".track_author");
+let track_img = document.querySelector(".track_img");
 let isPlaying = false
 let playlist = [];
-console.log(btnPlay);
+
+duration.innerHTML = "00:30"
 
 let treck; // Переменная с индексом трека
 
@@ -65,8 +69,12 @@ window.onload = function () {
 }
 
 function switchTreck(numTreck) {
+    track_name.innerHTML = playlist[numTreck].name;
+    track_author.innerHTML = playlist[numTreck].artists[0].name;
+    track_img.src = playlist[numTreck].album.images.at(-1).url;
+    console.log(playlist[numTreck]);
     // Меняем значение атрибута src
-    audio.src = playlist[numTreck];
+    audio.src = playlist[numTreck].preview_url;
     // Назначаем время песни ноль
     audio.currentTime = 0;
     // Включаем песню
@@ -87,9 +95,8 @@ btnPlay.onclick = () => {
 
 }
 
-duration.innerHTML = "00:30"
 
-audio.ontimeupdate = () => {
+audio.ontimeupdate = (e) => {
     currentTime.innerHTML = `${Math.ceil(audio.currentTime)}`.length < 2 ? "00:0" + Math.ceil(audio.currentTime) : "00:" + Math.ceil(audio.currentTime)
     progress.style.width = (audio.currentTime * 100) / audio.duration + '%';
 
@@ -106,6 +113,7 @@ audio.ontimeupdate = () => {
 }
 
 let isMouseDown = false;
+let volumeisMouseDown = false;
 
 line.addEventListener('mousedown', (e) => {
     isMouseDown = true;
@@ -128,40 +136,42 @@ line.addEventListener('mousemove', (e) => {
     audio.pause()
 });
 
-// btnPlay.addEventListener("click", function () {
+let currentVolume = 1
 
-//     isPlaying = !isPlaying
-//     if (isPlaying) {
-//         audio.play(); // Запуск песни
-//         // Запуск интервала
-//         var audioPlay = setInterval(function () {
-//             // Получаем значение на какой секунде песня
-//             let audioTime = Math.round(audio.currentTime);
-//             // Получаем всё время песни
-//             let audioLength = Math.round(audio.duration)
-//             // Назначаем ширину элементу time
-//             time.style.width = (audioTime * 100) / audioLength + '%';
-//             // Сравниваем, на какой секунде сейчас трек и всего сколько времени длится
-//             // И проверяем что переменная treck меньше четырёх
-//             if (audioTime == audioLength && treck < 3) {
-//                 treck++; // То Увеличиваем переменную
-//                 switchTreck(treck); // Меняем трек
-//                 // Иначе проверяем тоже самое, но переменная treck больше или равна четырём
-//             } else if (audioTime == audioLength && treck >= 3) {
-//                 treck = 0; // То присваиваем treck ноль
-//                 switchTreck(treck); // Меняем трек
-//             }
-//         }, 10)
+volume_line.addEventListener('mousedown', (e) => {
+    volumeisMouseDown = true;
+    volume_progressed.style.width = e.offsetX + "px";
+    audio.volume = e.offsetX / 100
+    currentVolume = audio.volume
+});
 
-//     } else {
-//         audio.pause(); // Останавливает песню
-//         clearInterval(audioPlay) // Останавливает интервал
-//     }
 
-// });
+
+volume_line.addEventListener('mouseup', () => {
+    volumeisMouseDown = false;
+});
+
+volume_line.addEventListener('mousemove', (e) => {
+    if (!volumeisMouseDown) return;
+    e.preventDefault();
+    volume_progressed.style.width = e.offsetX + "px";
+    audio.volume = e.offsetX / 100
+    currentVolume = audio.volume
+});
+
+volume.onclick = () => {
+    if (audio.volume !== 0) {
+        audio.volume = 0
+        volume_progressed.style.width = 0 + "px";
+    } else {
+        audio.volume = currentVolume
+        volume_progressed.style.width = currentVolume * 100 + "px";
+    }
+}
 
 btnPrev.addEventListener("click", function () {
     btnPlay.src = "/icons/pause.svg"
+    isPlaying = true
     // Проверяем что переменная treck больше нуля
     if (treck > 0) {
         treck--; // Если верно, то уменьшаем переменную на один
@@ -174,6 +184,7 @@ btnPrev.addEventListener("click", function () {
 
 btnNext.addEventListener("click", function () {
     btnPlay.src = "/icons/pause.svg"
+    isPlaying = true
     // Проверяем что переменная treck больше трёх
     if (treck < playlist.length - 1) { // Если да, то
         treck++; // Увеличиваем её на один
@@ -186,56 +197,41 @@ btnNext.addEventListener("click", function () {
 
 getUser("/me")
     .then(res => {
-        // if (!res) {
-        //     location.assign(`${import.meta.env.VITE_AUTH_ENDPOINT}?client_id=${import.meta.env.VITE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=${import.meta.env.VITE_RESPONSE_TYPE}&scope=user-library-read%20user-read-recently-played`)
+        if (!res) {
+            location.assign(`${import.meta.env.VITE_AUTH_ENDPOINT}?client_id=${import.meta.env.VITE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=${import.meta.env.VITE_RESPONSE_TYPE}&scope=user-library-read%20user-read-recently-played`)
 
-        // }
+        }
         console.log(res.data);
     })
 
 getDetails("/browse/featured-playlists")
     .then(res => {
-        // if (!res) {
-        //     location.assign(`${import.meta.env.VITE_AUTH_ENDPOINT}?client_id=${import.meta.env.VITE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=${import.meta.env.VITE_RESPONSE_TYPE}&scope=user-library-read%20user-read-recently-played`)
 
-        // }
+        if (!res) {
+            location.assign(`${import.meta.env.VITE_AUTH_ENDPOINT}?client_id=${import.meta.env.VITE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=${import.meta.env.VITE_RESPONSE_TYPE}&scope=user-library-read%20user-read-recently-played`)
+            localStorage.setItem("token", JSON.stringify(location.href.split('access_token=').at(-1)))
+        }
+
         reloadSpotiPlaylist(res.data.playlists.items, spotify_playlists)
 
         let btns = document.querySelectorAll(".item_img")
+
         btns.forEach(btn => {
             btn.onclick = () => {
+
+                isPlaying = true
+                btnPlay.src = "/icons/pause.svg"
                 playlist.length = 0
+
                 getDetails(`/playlists/${btn.id.split("/").at(-2)}/tracks`)
                     .then(res => {
                         for (let track of res.data.items) {
-                            if (track.track.preview_url) playlist.push(track.track.preview_url)
+                            if (track.track.preview_url) playlist.push(track.track)
                         }
+
                         treck = 0
                         switchTreck(treck); // Меняем песню.
                         console.log(playlist);
-                        btnPrev.addEventListener("click", function () {
-                            btnPlay.src = "/icons/pause.svg"
-                            // Проверяем что переменная treck больше нуля
-                            if (treck > 0) {
-                                treck--; // Если верно, то уменьшаем переменную на один
-                                switchTreck(treck); // Меняем песню.
-                            } else { // Иначе
-                                treck = playlist.length - 1; // Присваиваем три
-                                switchTreck(treck); // Меняем песню
-                            }
-                        });
-
-                        btnNext.addEventListener("click", function () {
-                            btnPlay.src = "/icons/pause.svg"
-                            // Проверяем что переменная treck больше трёх
-                            if (treck < playlist.length - 1) { // Если да, то
-                                treck++; // Увеличиваем её на один
-                                switchTreck(treck); // Меняем песню
-                            } else { // Иначе
-                                treck = 0; // Присваиваем ей ноль
-                                switchTreck(treck); // Меняем песню
-                            }
-                        });
                     })
             }
         })
@@ -270,6 +266,27 @@ const axiosPromises = playlistIds.map(playlistId => getDetails(`/playlists/${pla
 Promise.all(axiosPromises)
     .then(() => {
         reloadSpotiPlaylist(playlistData, focus);
+        let btns = document.querySelectorAll(".item_img")
+
+        btns.forEach(btn => {
+            btn.onclick = () => {
+
+                isPlaying = true
+                btnPlay.src = "/icons/pause.svg"
+                playlist.length = 0
+
+                getDetails(`/playlists/${btn.id.split("/").at(-2)}/tracks`)
+                    .then(res => {
+                        for (let track of res.data.items) {
+                            if (track.track.preview_url) playlist.push(track.track)
+                        }
+
+                        treck = 0
+                        switchTreck(treck); // Меняем песню.
+                        console.log(playlist);
+                    })
+            }
+        })
     });
 
 getDetails("/me/player/recently-played")
@@ -279,30 +296,15 @@ getDetails("/me/player/recently-played")
         // }
         playlist.length = 0
         for (let track of res.data.items) {
-            if (track.track.preview_url) playlist.push(track.track.preview_url)
+            if (track.track.preview_url) playlist.push(track.track)
         }
-        console.log(playlist);
-        btnPrev.addEventListener("click", function () {
-            btnPlay.src = "/icons/pause.svg"
-            // Проверяем что переменная treck больше нуля
-            if (treck > 0) {
-                treck--; // Если верно, то уменьшаем переменную на один
-                switchTreck(treck); // Меняем песню.
-            } else { // Иначе
-                treck = playlist.length - 1; // Присваиваем три
-                switchTreck(treck); // Меняем песню
-            }
-        });
 
-        btnNext.addEventListener("click", function () {
-            btnPlay.src = "/icons/pause.svg"
-            // Проверяем что переменная treck больше трёх
-            if (treck < playlist.length - 1) { // Если да, то
-                treck++; // Увеличиваем её на один
-                switchTreck(treck); // Меняем песню
-            } else { // Иначе
-                treck = 0; // Присваиваем ей ноль
-                switchTreck(treck); // Меняем песню
-            }
-        });
+        audio.src = playlist[treck].preview_url;
+        track_name.innerHTML = playlist[treck].name;
+        track_author.innerHTML = playlist[treck].artists[0].name;
+        track_img.src = playlist[treck].album.images.at(-1).url;
+
+        console.log(playlist[treck].preview_url, playlist[treck].name);
+        console.log(playlist);
+        console.log(playlist[treck]);
     })
