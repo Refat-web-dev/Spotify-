@@ -1,13 +1,17 @@
+import { extractColorsFromImage, getTopColors } from "./modules/colors";
 import { getDetails, getUser } from "./modules/http.request"
-import { reloadSpotiPlaylist } from "./modules/reload";
+import { reloadRecentlyPlayed, reloadSpotiPlaylist } from "./modules/reload";
 import { scrollToX } from "./modules/scrollFunction";
 import { token } from "./modules/token";
+import { usersCurrentTime } from "./modules/usersCurrentTime";
+usersCurrentTime()
 
-
+let recently_played = document.querySelector(".recently_played")
 let spotify_playlists = document.querySelector(".spotify_playlists")
 let focus = document.querySelector(".focus")
 let nav_header = document.querySelector(".nav_header")
 let container = document.querySelector(".container")
+let canvas = document.querySelector(".content_after")
 
 scrollToX(focus)
 scrollToX(spotify_playlists)
@@ -159,6 +163,10 @@ volume_line.addEventListener('mousemove', (e) => {
     currentVolume = audio.volume
 });
 
+volume_line.addEventListener('mouseleave', (e) => {
+    volumeisMouseDown = false;
+});
+
 volume.onclick = () => {
     if (audio.volume !== 0) {
         audio.volume = 0
@@ -234,6 +242,7 @@ getDetails("/browse/featured-playlists")
                         console.log(playlist);
                     })
             }
+            
         })
     })
 
@@ -299,12 +308,44 @@ getDetails("/me/player/recently-played")
             if (track.track.preview_url) playlist.push(track.track)
         }
 
-        audio.src = playlist[treck].preview_url;
-        track_name.innerHTML = playlist[treck].name;
-        track_author.innerHTML = playlist[treck].artists[0].name;
-        track_img.src = playlist[treck].album.images.at(-1).url;
+        reloadRecentlyPlayed(playlist.slice(0, 6), recently_played)
 
-        console.log(playlist[treck].preview_url, playlist[treck].name);
+        let btns = document.querySelectorAll(".recently_played .play")
+
+        btns.forEach((btn, i) => {
+            btn.onclick = () => {
+                isPlaying = true
+                btnPlay.src = "/icons/pause.svg"
+                treck = i
+                audio.src = btn.id;
+                audio.play()
+
+                track_name.innerHTML = playlist[i].name;
+                track_author.innerHTML = playlist[i].artists[0].name;
+                track_img.src = playlist[i].album.images.at(-1).url;
+            }
+            btn.parentElement.onmouseenter = () => {
+                extractColorsFromImage(playlist[i].album.images.at(-1).url)
+                    .then(colors => {
+                        const topColors = getTopColors(colors, 1)[0];
+                        console.log(topColors);
+                        canvas.style.background = `rgba(${topColors}, 0.643)`
+                        // Здесь можно использовать полученные цвета в вашем приложении
+                    })
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                    });
+            }
+            btn.parentElement.onmouseleave = () => {
+                usersCurrentTime()
+            }
+        })
+        audio.src = playlist[0].preview_url;
+        track_name.innerHTML = playlist[0].name;
+        track_author.innerHTML = playlist[0].artists[0].name;
+        track_img.src = playlist[0].album.images.at(-1).url;
+
+        // console.log(playlist[treck].preview_url, playlist[treck].name);
         console.log(playlist);
-        console.log(playlist[treck]);
+        // console.log(playlist[treck]);
     })

@@ -34,3 +34,28 @@ export function reloadSpotiPlaylist(arr, place) {
         place.append(item)
     }
 }
+
+export function reloadRecentlyPlayed(arr, place) {
+    place.innerHTML = ""
+    for (let item of arr) {
+        let playlist = document.createElement("div")
+        let img = document.createElement("img")
+        let playlist_title = document.createElement("div")
+        let play = document.createElement("button")
+        let play_img = document.createElement("img")
+
+        playlist.classList.add("playlist")
+        playlist_title.classList.add("playlist_title")
+        play.classList.add("play")
+        play.id = item.preview_url
+        console.log(item);
+        play_img.src = "/icons/playlist_play_icon.svg"
+        img.src = `${item.album.images[2].url}`
+        playlist_title.innerHTML = item.name
+
+        playlist.append(img, playlist_title, play)
+        play.append(play_img)
+        place.append(playlist)
+        console.log(item);
+    }
+}
