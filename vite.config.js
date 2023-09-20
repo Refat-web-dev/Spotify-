@@ -12,7 +12,6 @@ export default defineConfig({
             input: {
                 main: resolve(__dirname, 'index.html'),
                 playlist: resolve(__dirname, '/pages/playlist/index.html'),
-                persons: resolve(__dirname, '/pages/persons/index.html'),
             },
         },
     },
