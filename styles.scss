@@ -249,7 +249,7 @@ main {
             cursor: not-allowed;
             border-radius: 16px;
             opacity: 0.6;
-            background: rgba(0, 0, 0, 0.70);
+            background: #16161A;
             width: 32px;
             height: 32px;
             @include flex();
@@ -259,9 +259,14 @@ main {
             @include flex();
             gap: 10px;
 
+            .account,
             .sign_up,
             .login {
                 transition: .1s ease;
+                font-size: 15px;
+                font-weight: 700;
+                padding: 10px 20px;
+                border-radius: 1000px;
 
                 &:hover {
                     scale: 1.03;
@@ -269,30 +274,43 @@ main {
             }
 
             .sign_up {
-                font-size: 15px;
-                font-weight: 700;
-                padding: 15px 32px;
+                background-color: #fff;
+                color: #000;
 
                 &:hover {
-                    filter: brightness(5);
+                    background: #e7f1ff;
                 }
             }
 
             .login {
-                color: #000;
-                font-size: 15px;
-                font-weight: 700;
+                @include flex();
+                background: #16161A;
+                color: #FFF;
+
+                gap: 5px;
+
+                img {
+                    width: 18px;
+                }
+            }
+
+            .account {
+                padding: 0;
+                background: #FFF;
+                width: fit-content;
+                width: 30px;
+                height: 30px;
                 display: flex;
-                padding: 15px 32px;
                 justify-content: center;
                 align-items: center;
-                border-radius: 500px;
-                background: #FFF;
 
-                &:hover {
-                    background: #e7f1ff;
-
+                // overflow: hidden;
+                img {
+                    width: 32px;
+                    height: 32px;
                 }
+
+                border-radius: 1000px;
             }
         }
     }
@@ -308,7 +326,6 @@ main {
         height: 100%;
 
         &::-webkit-scrollbar {
-            // display: none;
             height: 1px;
             width: 12px;
         }
@@ -401,19 +418,97 @@ footer {
 }
 
 .library {
-    padding: 0px 6px;
+    padding: 0px 20px;
     @include flex();
     flex-direction: column;
     align-items: start;
-    justify-content: space-between;
+    justify-content: start;
     height: 100%;
+}
+
+.playlists {
+    @include flex();
+    flex-direction: column;
+    width: 100%;
+    align-items: start;
+    overflow: auto;
+    max-height: 560px;
+    justify-content: start;
+
+    &:hover {
+
+        &::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.30);
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.6);
+
+            }
+        }
+    }
+
+    &::-webkit-scrollbar {
+        // display: none;
+        height: 1px;
+        width: 12px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: transparent;
+        transition: 1s;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.6);
+
+        }
+    }
+}
+
+.library_playlist {
+    @include flex();
+    width: 100%;
+    gap: 10px;
+    padding: 7.5px;
+    justify-content: start;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+        background: #2e2e2e5d;
+    }
+
+    .library_playlist_images {
+        @include flex();
+        max-width: 46px;
+        flex-wrap: wrap;
+
+        img {
+            width: 23px;
+        }
+    }
+
+    .library_playlist_info {
+        @include flex();
+        flex-direction: column;
+        gap: 10px;
+        align-items: start;
+
+        .library_playlist_name {
+            color: #FFF;
+        }
+    }
 }
 
 .library_head {
     width: 100%;
-    padding: 10px;
+    padding: 10px 0px;
     @include flex();
     justify-content: space-between;
+
+    .library_btns {
+        @include flex();
+        gap: 10px;
+    }
 
     .library_icon {
         @include flex();
@@ -436,6 +531,7 @@ footer {
         font-size: 15px;
         font-weight: 700;
     }
+
 
     .create {
         width: 32px;
@@ -470,6 +566,30 @@ footer {
     .create:hover::after {
         filter: brightness(5);
     }
+
+    .fullWidth {
+        position: relative;
+
+        img {
+            position: absolute;
+            top: 30%;
+            width: 18px;
+            transition: .3s ease;
+        }
+
+        &:hover {
+            img {
+                filter: brightness(5);
+            }
+
+        }
+
+        &::before,
+        &::after {
+            display: none;
+        }
+
+    }
 }
 
 .library_main {
@@ -502,86 +622,82 @@ footer {
         background-color: rgba(0, 0, 0, 0.1);
     }
 
-}
-
-.option {
-    @include flex();
-    flex-direction: column;
-    align-items: start;
-    gap: 22px;
-    width: 100%;
-    border-radius: 8px;
-    background: #242424;
-    padding: 20px;
-
-    h3 {
-        font-size: 15px;
-        color: #FFF;
-        font-weight: 700;
-    }
-
-    p {
-        color: #FFF;
-        font-size: 12px;
-    }
-
-    button {
-        cursor: pointer;
-        border-radius: 500px;
-        background: #FFF;
-        color: #000;
-        font-size: 13px;
-        font-weight: 700;
+    .tags {
         @include flex();
-        padding: 8px 17px;
-        transition: .1s ease;
+        gap: 10px;
+        justify-content: space-between;
 
-        &:hover {
-            background: #e7f1ff;
-            scale: 1.03;
+        p {
+            font-weight: 500;
+            font-size: 13px;
+            padding: 10px;
+            border-radius: 1000px;
+            color: #FFF;
+            background: #232323;
+            transition: .3s ease;
+            cursor: pointer;
+
+            &:hover {
+                background: #292929;
+            }
         }
     }
-}
 
-.link_cont {
-    align-self: flex-end;
-    padding: 20px;
+    .library_find {
+        @include flex();
+        width: 100%;
+        gap: 10px;
+        justify-content: space-between;
 
-    a {
-        color: #A7A7A7;
-        font-size: 9px;
-        font-style: normal;
-        font-weight: 600;
-    }
-}
+        .find {
 
-.aside_links {
-    @include flex();
-    align-items: start;
-    justify-content: start;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 15px;
-}
+            &::placeholder {
+                color: transparent;
+                transition: .3s ease;
+            }
 
-.lang {
-    all: unset;
-    @include flex();
-    cursor: pointer;
-    color: #FFF;
-    font-size: 12px;
-    font-weight: 700;
-    padding: 6px 10px;
-    gap: 4px;
-    border-radius: 500px;
-    border: 1px solid #727272;
-    margin: 20px 0 0;
-    transition: .1s ease;
+            all: unset;
+            max-width: 30px;
+            height: 30px;
+            background-image: url("/public/icons/search_icon.svg");
+            background-position: 6px 50%;
+            background-repeat: no-repeat;
+            background-size: 18px 18px;
+            border-radius: 1000px;
+            transition: .5s ease;
+            cursor: pointer;
+            overflow: hidden;
+            color: transparent;
 
-    &:hover {
-        border: 1px solid #FFF;
-        scale: 1.05;
+            &:hover {
+                filter: brightness(2);
+                background-color: #141414;
+            }
+        }
 
+        .find:focus {
+
+            &::placeholder {
+                color: gray;
+            }
+
+            padding-left: 30px;
+            filter: brightness(2);
+            color: gray;
+            background-color: #141414;
+            max-width: 100%;
+            border-radius: 5px;
+        }
+
+        .period {
+            background: none;
+            color: gray;
+            transition: .3s ease;
+
+            &:hover {
+                color: rgb(179, 176, 176);
+            }
+        }
     }
 }
 
@@ -699,6 +815,7 @@ footer {
             width: 80px;
             border-top-left-radius: 5px;
             border-bottom-left-radius: 5px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.732);
         }
 
         .playlist_title {
@@ -718,6 +835,7 @@ footer {
                 top: 50%;
                 left: 55%;
                 translate: -50% -50%;
+                box-shadow: none;
             }
 
             position: absolute;
@@ -909,8 +1027,9 @@ footer {
 
 .player_left {
     @include flex();
-    justify-content: space-between;
+    justify-content: start;
     gap: 20px;
+    min-width: 330px;
 }
 
 .track_img {
@@ -939,12 +1058,16 @@ footer {
     gap: 20px;
 
     button {
-        transition: .3s ease;
-        fill: #B2B2B2;
 
-        &:hover {
-            fill: #fff;
+        img {
+            transition: .3s ease;
+            width: 16px;
+
+            &:hover {
+                filter: brightness(5)
+            }
         }
+
     }
 }
 
@@ -1000,7 +1123,7 @@ footer {
     }
 
     .connect {
-        width: 22px;
+        width: 18px;
     }
 
     .volume {

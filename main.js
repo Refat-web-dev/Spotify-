@@ -1,15 +1,42 @@
 import { extractColorsFromImage, getTopColors } from "./modules/colors";
 import { getDetails, getUser } from "./modules/http.request"
-import { reloadRecentlyPlayed, reloadSpotiPlaylist } from "./modules/reload";
+import { navHeader, header, aside, mainFooter, footer } from "./modules/layouts";
+import { asidePlaylists, reloadRecentlyPlayed, reloadSpotiPlaylist } from "./modules/reload";
 import { scrollToX } from "./modules/scrollFunction";
 import { token } from "./modules/token";
 import { usersCurrentTime } from "./modules/usersCurrentTime";
-usersCurrentTime()
 
+
+usersCurrentTime()
+let header_place = document.querySelector("header")
+let aside_place = document.querySelector("aside")
+let nav_header_place = document.querySelector(".nav_header")
+let main_footer = document.querySelector(".main_footer")
+let footer_place = document.querySelector("footer")
+header(header_place)
+aside(aside_place)
+navHeader(nav_header_place)
+mainFooter(main_footer)
+footer(footer_place)
+const allScopes = [
+    'user-read-playback-state',
+    'user-modify-playback-state',
+    'user-read-currently-playing',
+    'user-library-read',
+    'user-library-modify',
+    'playlist-read-private',
+    'playlist-modify-public',
+    'playlist-modify-private',
+    'user-top-read',
+    'user-follow-read',
+    'user-follow-modify',
+    'user-read-email',
+    // Добавьте сюда другие скоупы, если они вам нужны
+];
+let playlists = document.querySelector(".playlists")
 let recently_played = document.querySelector(".recently_played")
 let spotify_playlists = document.querySelector(".spotify_playlists")
 let focus = document.querySelector(".focus")
-let nav_header = document.querySelector(".nav_header")
 let container = document.querySelector(".container")
 let canvas = document.querySelector(".content_after")
 
@@ -25,9 +52,9 @@ container.addEventListener('scroll', () => {
     if (currentScrollTop > 50) {
         const progress = Math.min((currentScrollTop - 50) / 100, 1); // Прогресс от 0 до 1
         const newColor = blendColors(initialColor, targetColor, progress);
-        nav_header.style.background = `rgba(${newColor[0]}, ${newColor[1]}, ${newColor[2]}, ${newColor[3]})`;
+        nav_header_place.style.background = `rgba(${newColor[0]}, ${newColor[1]}, ${newColor[2]}, ${newColor[3]})`;
     } else {
-        nav_header.style.background = `rgba(${initialColor[0]}, ${initialColor[1]}, ${initialColor[2]}, ${initialColor[3]})`;
+        nav_header_place.style.background = `rgba(${initialColor[0]}, ${initialColor[1]}, ${initialColor[2]}, ${initialColor[3]})`;
     }
 });
 
@@ -41,7 +68,7 @@ function blendColors(startColor, endColor, progress) {
 }
 
 if (!token) {
-    location.assign(`${import.meta.env.VITE_AUTH_ENDPOINT}?client_id=${import.meta.env.VITE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=${import.meta.env.VITE_RESPONSE_TYPE}&scope=user-library-read%20user-read-recently-played`)
+    location.assign(`${import.meta.env.VITE_AUTH_ENDPOINT}?client_id=${import.meta.env.VITE_CLIENT_ID}&redirect_uri=${import.meta.env.VITE_REDIRECT_URI}&response_type=${import.meta.env.VITE_RESPONSE_TYPE}&scope=${allScopes.join('%20')}`)
     localStorage.setItem("token", JSON.stringify(location.href.split('access_token=').at(-1)))
 }
 
@@ -101,9 +128,9 @@ btnPlay.onclick = () => {
 
 
 audio.ontimeupdate = (e) => {
+
     currentTime.innerHTML = `${Math.ceil(audio.currentTime)}`.length < 2 ? "00:0" + Math.ceil(audio.currentTime) : "00:" + Math.ceil(audio.currentTime)
     progress.style.width = (audio.currentTime * 100) / audio.duration + '%';
-
     if ((audio.currentTime * 100) / audio.duration === 100) {
         if (treck < playlist.length - 1) { // Если да, то
             treck++; // Увеличиваем её на один
@@ -222,16 +249,17 @@ getDetails("/browse/featured-playlists")
 
         reloadSpotiPlaylist(res.data.playlists.items, spotify_playlists)
 
-        let btns = document.querySelectorAll(".item_img")
+        let btns = document.querySelectorAll(".spotify_playlists .item_img .play")
 
         btns.forEach(btn => {
-            btn.onclick = () => {
-
+            btn.onclick = (e) => {
+                e.stopPropagation()
+                console.log(btn);
                 isPlaying = true
                 btnPlay.src = "/icons/pause.svg"
                 playlist.length = 0
 
-                getDetails(`/playlists/${btn.id.split("/").at(-2)}/tracks`)
+                getDetails(`/playlists/${btn.parentElement.id.split("/").at(-2)}/tracks`)
                     .then(res => {
                         for (let track of res.data.items) {
                             if (track.track.preview_url) playlist.push(track.track)
@@ -242,7 +270,7 @@ getDetails("/browse/featured-playlists")
                         console.log(playlist);
                     })
             }
-            
+
         })
     })
 
@@ -275,7 +303,7 @@ const axiosPromises = playlistIds.map(playlistId => getDetails(`/playlists/${pla
 Promise.all(axiosPromises)
     .then(() => {
         reloadSpotiPlaylist(playlistData, focus);
-        let btns = document.querySelectorAll(".item_img")
+        let btns = document.querySelectorAll(".focus .item_img .play")
 
         btns.forEach(btn => {
             btn.onclick = () => {
@@ -284,7 +312,7 @@ Promise.all(axiosPromises)
                 btnPlay.src = "/icons/pause.svg"
                 playlist.length = 0
 
-                getDetails(`/playlists/${btn.id.split("/").at(-2)}/tracks`)
+                getDetails(`/playlists/${btn.parentElement.id.split("/").at(-2)}/tracks`)
                     .then(res => {
                         for (let track of res.data.items) {
                             if (track.track.preview_url) playlist.push(track.track)
@@ -308,8 +336,9 @@ getDetails("/me/player/recently-played")
             if (track.track.preview_url) playlist.push(track.track)
         }
 
-        reloadRecentlyPlayed(playlist.slice(0, 6), recently_played)
 
+        reloadRecentlyPlayed(playlist.slice(0, 6), recently_played)
+        asidePlaylists(playlist, playlists)
         let btns = document.querySelectorAll(".recently_played .play")
 
         btns.forEach((btn, i) => {
@@ -328,7 +357,6 @@ getDetails("/me/player/recently-played")
                 extractColorsFromImage(playlist[i].album.images.at(-1).url)
                     .then(colors => {
                         const topColors = getTopColors(colors, 1)[0];
-                        console.log(topColors);
                         canvas.style.background = `rgba(${topColors}, 0.643)`
                         // Здесь можно использовать полученные цвета в вашем приложении
                     })
@@ -345,7 +373,4 @@ getDetails("/me/player/recently-played")
         track_author.innerHTML = playlist[0].artists[0].name;
         track_img.src = playlist[0].album.images.at(-1).url;
 
-        // console.log(playlist[treck].preview_url, playlist[treck].name);
-        console.log(playlist);
-        // console.log(playlist[treck]);
     })

@@ -32,6 +32,10 @@ export function reloadSpotiPlaylist(arr, place) {
         play.append(triangle)
 
         place.append(item)
+
+        item.onclick = () => {
+            location.assign("/pages/playlist/?id=" + item.id)
+        }
     }
 }
 
@@ -48,7 +52,6 @@ export function reloadRecentlyPlayed(arr, place) {
         playlist_title.classList.add("playlist_title")
         play.classList.add("play")
         play.id = item.preview_url
-        console.log(item);
         play_img.src = "/icons/playlist_play_icon.svg"
         img.src = `${item.album.images[2].url}`
         playlist_title.innerHTML = item.name
@@ -56,6 +59,39 @@ export function reloadRecentlyPlayed(arr, place) {
         playlist.append(img, playlist_title, play)
         play.append(play_img)
         place.append(playlist)
-        console.log(item);
+    }
+}
+
+export function asidePlaylists(arr, place) {
+    place.innerHTML = ""
+
+    for (let tracks of arr) {
+        let library_playlist = document.createElement("div")
+        let library_playlist_images = document.createElement("div")
+        for (let i = 0; i < 4; i++) {
+            let img = document.createElement("img")
+            img.src = tracks.album.images[2].url
+            library_playlist_images.append(img)
+        }
+        let library_playlist_info = document.createElement("div")
+        let library_playlist_name = document.createElement("p")
+        let library_playlist_owner = document.createElement("p")
+        library_playlist.classList.add("library_playlist")
+        library_playlist_images.classList.add("library_playlist_images")
+        library_playlist_info.classList.add("library_playlist_info")
+        library_playlist_name.classList.add("library_playlist_name")
+        library_playlist_owner.classList.add("library_playlist_owner")
+
+        library_playlist_name.innerHTML = tracks.artists[0].name
+        if (tracks.album.name.length > 13) {
+
+            library_playlist_owner.innerHTML = "Playlist: " + tracks.album.name.slice(0, 13) + "..."
+        } else {
+            library_playlist_owner.innerHTML = "Playlist: " + tracks.album.name
+        }
+        library_playlist.append(library_playlist_images, library_playlist_info)
+        library_playlist_info.append(library_playlist_name, library_playlist_owner)
+
+        place.append(library_playlist)
     }
 }

@@ -31,42 +31,51 @@
           <div class="library_icon">
             <h2>Your Library</h2>
           </div>
-          <div class="create"></div>
+          <div class="library_btns">
+            <div class="create"></div>
+            <div class="create fullWidth"><img src="/icons/arrow_right.svg"></div>
+          </div>
         </div>
         <div class="library_main">
-          <div class="create_playlist option">
-            <h3 class="title">
-              Create your first playlist
-            </h3>
-            <p class="sub_titile">It's easy, we'll help you</p>
-            <button id="create">Create playlist</button>
+          <div class="tags">
+            <p>Playlist</p>
+            <p>Podcast & Shows</p>
           </div>
-          <div class="find_podcasts option">
-            <h3 class="title">
-              Let's find some podcasts to follow
-            </h3>
-            <p class="sub_titile">We'll keep you updated on new episodes</p>
-            <button id="browse">Browse podcasts</button>
+          <div class="library_find">
+            <input type="text" name="find" placeholder="Search in Your Library" class="find">
+            <select name="period" class="period">
+              <option value="">Recents</option>
+            </select>
           </div>
         </div>
       </div>
-      <!-- <div class="link_cont">
-        <ul class="aside_links">
-          <li><a href="#">Legal</a></li>
-          <li><a href="#">Privacy Center</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Cookies</a></li>
-          <li><a href="#">About Ads</a></li>
-          <li><a href="#">Accessibility</a></li>
-        </ul>
-        <div class="cookies">
-          <a href="#">Cookies</a>
+      <div class="playlists">
+
+        <div class="library_playlist">
+          <div class="library_playlist_images">
+            <img src="/images/ab67706f000000023a3fb64292d4fc08b424a965.png" width="23" alt="">
+            <img src="/images/ab67706f000000023a3fb64292d4fc08b424a965.png" width="23" alt="">
+            <img src="/images/ab67706f000000023a3fb64292d4fc08b424a965.png" width="23" alt="">
+            <img src="/images/ab67706f000000023a3fb64292d4fc08b424a965.png" width="23" alt="">
+          </div>
+          <div class="library_playlist_info">
+            <p class="library_playlist_name">Today's Top Hits</p>
+            <p class="library_playlist_owner">Playlist . Refat Islyamov</p>
+          </div>
         </div>
-        <button class="lang">
-          <img width="14" src="/icons/language.svg" alt="">
-          English
-        </button>
-      </div> -->
+        <div class="library_playlist">
+          <div class="library_playlist_images">
+            <img src="/images/ab67706f000000023a3fb64292d4fc08b424a965.png" width="23" alt="">
+            <img src="/images/ab67706f000000023a3fb64292d4fc08b424a965.png" width="23" alt="">
+            <img src="/images/ab67706f000000023a3fb64292d4fc08b424a965.png" width="23" alt="">
+            <img src="/images/ab67706f000000023a3fb64292d4fc08b424a965.png" width="23" alt="">
+          </div>
+          <div class="library_playlist_info">
+            <p class="library_playlist_name">Today's Top Hits</p>
+            <p class="library_playlist_owner">Playlist . Refat Islyamov</p>
+          </div>
+        </div>
+      </div>
     </div>
   </aside>
   <main>
@@ -77,8 +86,9 @@
           <button class="next_page"><img src="/icons/next_page.svg" alt=""></button>
         </div>
         <div class="other_btns">
-          <button class="sign_up reg">Sign up</button>
-          <button class="login reg">Login</button>
+          <button class="sign_up reg">Explore Premium</button>
+          <button class="login reg">Install App</button>
+          <button class="account"><img src="/icons/account.svg" alt=""></button>
         </div>
       </div>
     </div>
@@ -272,14 +282,6 @@
     </div>
   </main>
   <footer>
-
-    <!-- <div class="free_sign_left">
-      <h2>Preview of Spotify</h2>
-      <p>Sign up to get unlimited songs and podcasts with occasional ads. No credit card needed.</p>
-    </div>
-    <div class="free_sign_right">
-      <button class="reg">Sign up free</button>
-    </div> -->
     <div class="player">
       <div class="player_left">
         <img src="/images/ab67616d00004851e787cffec20aa2a396a61647.png" alt="" class="track_img">
@@ -288,22 +290,7 @@
           <p class="track_author">Taylor Swift</p>
         </div>
         <div class="actions">
-          <button><svg role="img" height="16" width="16" aria-hidden="true" viewBox="0 0 16 16" data-encore-id="icon"
-              class="Svg-sc-ytk21e-0 haNxPq">
-              <path
-                d="M1.69 2A4.582 4.582 0 0 1 8 2.023 4.583 4.583 0 0 1 11.88.817h.002a4.618 4.618 0 0 1 3.782 3.65v.003a4.543 4.543 0 0 1-1.011 3.84L9.35 14.629a1.765 1.765 0 0 1-2.093.464 1.762 1.762 0 0 1-.605-.463L1.348 8.309A4.582 4.582 0 0 1 1.689 2zm3.158.252A3.082 3.082 0 0 0 2.49 7.337l.005.005L7.8 13.664a.264.264 0 0 0 .311.069.262.262 0 0 0 .09-.069l5.312-6.33a3.043 3.043 0 0 0 .68-2.573 3.118 3.118 0 0 0-2.551-2.463 3.079 3.079 0 0 0-2.612.816l-.007.007a1.501 1.501 0 0 1-2.045 0l-.009-.008a3.082 3.082 0 0 0-2.121-.861z">
-              </path>
-            </svg>
-          </button>
-          <button>
-            <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-              <g>
-                <path d="M1 3v9h14V3H1zm0-1h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"
-                  fill-rule="nonzero"></path>
-                <path d="M10 8h4v3h-4z"></path>
-              </g>
-            </svg>
-          </button>
+          <button><img src="/icons/heart.svg" alt=""></button>
         </div>
       </div>
       <div class="player_center">
@@ -318,7 +305,7 @@
           <button class="replay"><img src="/icons/replay.svg" alt=""></button>
         </div>
         <div class="main_line">
-          <span class="currentTime">00:00</span>
+          <span class="currentTime">--:--</span>
           <div class="parent_line">
             <div class="line">
               <div class="progress">
@@ -327,7 +314,7 @@
               </div>
             </div>
           </div>
-          <span class="duration">00:00</span>
+          <span class="duration">--:--</span>
         </div>
       </div>
       <div class="player_right">
