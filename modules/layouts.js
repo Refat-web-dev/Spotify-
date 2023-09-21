@@ -339,7 +339,7 @@ export function footer(place) {
     img_connect.src = "/icons/connect.svg"
 
     clue_volume.innerHTML = "Mute"
-    img_volume.src = "/icons/volume.svg"
+    img_volume.src = "/icons/high_volume.svg"
 
     clue_picture.innerHTML = "Picture in picture"
     img_picture.src = "/icons/pictureInpicture.svg"

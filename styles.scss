@@ -1130,6 +1130,10 @@ footer {
         @include flex();
         gap: 5px;
 
+        img {
+            width: 22px;
+        }
+
         .clue {
             left: 10px;
         }

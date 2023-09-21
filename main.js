@@ -77,6 +77,7 @@ let audio = document.getElementById("audio");
 let progress = document.querySelector(".progress");
 let line = document.querySelector(".parent_line");
 let volume = document.querySelector(".volume img");
+let liked = document.querySelector(".player_left .actions button img");
 let volume_line = document.querySelector(".volume_parent");
 let volume_progressed = document.querySelector(".volume_progressed");
 let btnPlay = document.querySelector(".controls .play img");
@@ -89,6 +90,10 @@ let track_author = document.querySelector(".track_author");
 let track_img = document.querySelector(".track_img");
 let isPlaying = false
 let playlist = [];
+
+liked.onclick = () => {
+    liked.src = "/icons/heart_active.svg"
+}
 
 duration.innerHTML = "00:30"
 
@@ -174,6 +179,12 @@ volume_line.addEventListener('mousedown', (e) => {
     volume_progressed.style.width = e.offsetX + "px";
     audio.volume = e.offsetX / 100
     currentVolume = audio.volume
+    console.log(currentVolume);
+    if (currentVolume < 0.50) {
+        volume.src = "/icons/low_volume.svg"
+    } else {
+        volume.src = "/icons/high_volume.svg"
+    }
 });
 
 
@@ -188,6 +199,11 @@ volume_line.addEventListener('mousemove', (e) => {
     volume_progressed.style.width = e.offsetX + "px";
     audio.volume = e.offsetX / 100
     currentVolume = audio.volume
+    if (currentVolume < 0.50) {
+        volume.src = "/icons/low_volume.svg"
+    } else {
+        volume.src = "/icons/high_volume.svg"
+    }
 });
 
 volume_line.addEventListener('mouseleave', (e) => {
@@ -198,9 +214,15 @@ volume.onclick = () => {
     if (audio.volume !== 0) {
         audio.volume = 0
         volume_progressed.style.width = 0 + "px";
+        volume.src = "/icons/mute_volume.svg"
     } else {
         audio.volume = currentVolume
         volume_progressed.style.width = currentVolume * 100 + "px";
+        if (currentVolume < 0.50) {
+            volume.src = "/icons/low_volume.svg"
+        } else {
+            volume.src = "/icons/high_volume.svg"
+        }
     }
 }
 
